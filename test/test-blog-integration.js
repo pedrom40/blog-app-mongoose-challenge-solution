@@ -1,10 +1,9 @@
 // necessary libraries and settings
 const chai = require('chai');
+const expect = chai.expect;
 const chaiHttp = require('chai-http');
 const faker = require('faker');
 const mongoose = require('mongoose');
-
-const should = chai.should();
 
 const {BlogPost} = require('../models');
 const {app, runServer, closeServer} = require('../server');
@@ -66,6 +65,42 @@ describe('Blog Posts API resource', () => {
 
   after( () => {
     return closeServer();
+  });
+
+
+  // test GET endpoint
+  describe('GET endpoint', () => {
+
+    it('should return all blog posts', () => {
+
+      // make response variable available throughout nests
+      let res;
+
+      return chai.request(app)
+
+        // get all the existing records
+        .get('/posts')
+
+        // now check them out
+        .then( _res => {
+
+          // pass to parent res var; success status and count check
+          res = _res;
+          expect(res).to.have.status(200);
+          expect(res.body).to.have.length.of.at.least(1);
+
+          // send number of records to next promise
+          return BlogPost.count();
+
+        })
+
+        // now make sure we have the correct number
+        .then( count => {
+          expect(res.body).to.have.lengthOf(count);
+        });
+
+    });
+
   });
 
 });
