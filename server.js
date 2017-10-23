@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 
-const {DATABASE_URL, PORT} = require('./config');
+const {TEST_DATABASE_URL, DATABASE_URL, PORT} = require('./config');
 const {BlogPost} = require('./models');
 
 const app = express();
